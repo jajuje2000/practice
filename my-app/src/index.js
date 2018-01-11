@@ -4,12 +4,67 @@ import './index.css';
 
 class Square extends React.Component {
   render() {
-    return (
-      <button className="square">
-        {/* TODO */}
-      </button>
-    );
+    if(this.props.id %6 === 0)
+    {
+      return (
+        <div>
+          <button className="square">
+            {this.props.gamename}
+          </button>
+        </div>
+      )
+    }
+    else
+    {
+      return (
+          <button className="square">
+            {this.props.gamename}
+          </button>
+      )
+    }
+    
   }
+}
+
+class AwsApiCalls extends React.Component{
+  constructor(){
+    super();
+    this.state = {
+      dataApi: [],
+    };
+  }
+
+  componentDidMount(){
+    fetch('https://f0lotrvq43.execute-api.us-east-2.amazonaws.com/beta/tbgames',{   
+      method: 'Get'
+    })
+    .then(results => {
+      return results.json();
+    }).then(data => {
+      let i = 0;
+      let dataApi = data.Items[0].Details.M.Codenames.SS.map((game) => {
+        i++;
+        if(i < 26)
+        {
+          return(
+            <Square gamename={game} id={i} key={i}/>
+          )
+        }
+        
+      })
+      this.setState({dataApi: dataApi});
+      console.log("state", this.state.dataApi)
+    })
+  }
+
+  render(){
+    return(
+      <div>
+        {this.state.dataApi}
+      </div>
+    )
+  }
+
 }
 
 class Board extends React.Component {
@@ -47,11 +102,12 @@ class Game extends React.Component {
   render() {
     return (
       <div className="game">
-        <div className="game-board">
+        {/*<div className="game-board"> 
           <Board />
-        </div>
+        </div>*/}
         <div className="game-info">
-          <div>{/* status */}</div>
+        <div><b>Codneames:</b></div>
+          <div><AwsApiCalls /></div>
           <ol>{/* TODO */}</ol>
         </div>
       </div>
