@@ -8,7 +8,7 @@ class Square extends React.Component {
     {
       return (
         <div>
-          <button className="square">
+          <button className="square">  
             {this.props.gamename}
           </button>
         </div>
