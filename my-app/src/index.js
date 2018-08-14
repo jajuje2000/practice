@@ -10,7 +10,7 @@ class Login extends React.Component {
     super(props);
     this.loginFail = this.loginFail.bind(this);
     this.loginSuccess = this.loginSuccess.bind(this);
-    this.state = { showGame: false, showLoginError: false, dataApi: [],userName: "", showRegisterComponent: false }
+    this.state = { showGame: false, showLoginError: false, dataApi: [],userName: "", showRegisterComponent: false , teamColor: "",teamColorName: ""}
     
   }
 
@@ -108,11 +108,44 @@ class Login extends React.Component {
       return results.json();
     }).then(data => {
       var details = data.Items[0].Details.M;
+      var assasinCount = parseInt(details.AssasinCount.N, 10);
+      var blueAgentCount = parseInt(details.BlueAgentCount.N, 10);
+      var redAgentCount = parseInt(details.RegAgentCount.N, 10);
+      var bystanderCount = parseInt(details.BystanderCount.N, 10);
+      var doubleAgentCount = parseInt(details.DoubleAgentCount.N, 10);
+      var colorCodeList = [];
+      for(var i = 0;i < blueAgentCount;i++)
+      {
+        colorCodeList.push('#87CEEB');
+      }
+
+      for(i = 0;i < redAgentCount;i++)
+      {
+        colorCodeList.push('#FF6347');
+      }
+
+      for(i = 0;i < bystanderCount;i++)
+      {
+        colorCodeList.push('#FFEFD5');
+      }
+
+      for(i = 0;i < assasinCount;i++)
+      {
+        colorCodeList.push('#A9A9A9');
+      }
+
+      if(doubleAgentCount === 1)
+      {
+        var randomTeam = Math.floor(Math.random() * 2);
+        colorCodeList.push(randomTeam === 1?'#87CEEB':'#FF6347');
+      }
+
       var codenames = details.Codenames.SS;
+      var shuffledCodenames = [];
       var ctr = codenames.length, temp, index;
 
       let dataApi = [];
-      let j = 0;
+      var j = 0;
       while(ctr > 0 && j < 25){
         j++;
         index = Math.floor(Math.random() * ctr);
@@ -123,9 +156,27 @@ class Login extends React.Component {
           codenames[ctr] = codenames[index];
           codenames[index] = temp;
 
-          dataApi.push(<Square gamename={temp} id={j} key={ctr} />);
+          shuffledCodenames.push(codenames[ctr]);
+      } 
+
+      j = 0;
+
+      var ctr2 = shuffledCodenames.length, temp2, index2;
+      while(j < shuffledCodenames.length)
+      {
+          index2 = Math.floor(Math.random() * ctr2);
+          // Decrease ctr by 1
+          ctr2--;
+          // And swap the last element with it
+          temp2 = colorCodeList[ctr2];
+          colorCodeList[ctr2] = colorCodeList[index2];
+          colorCodeList[index2] = temp2;
+
+        dataApi.push(<Square gamename={shuffledCodenames[j]} id={j} key={ctr2} bgColor={colorCodeList[ctr2]} />);
+        j++;
       }
-      this.setState({showGame: true , showLoginError: false, dataApi: dataApi});
+
+      this.setState({showGame: true , showLoginError: false, dataApi: dataApi,teamColor: randomTeam === 1?'#87CEEB':'#FF6347', teamColorName: randomTeam === 1?'Blue':'Red'});
       console.log("state", this.state.dataApi)
     })
     .catch(function(){
@@ -240,6 +291,9 @@ class Login extends React.Component {
               <h2>GAMECENTER</h2>
           </div>
           <div style={{position: 'absolute',left:30 + '%',top:30 + '%'}}>
+            <div>
+            <h2><a style={{color:this.state.teamColor}}>{this.state.teamColorName}</a> Team Goes First</h2> 
+            </div>
             <Game dataApi={this.state.dataApi} />
           </div>
         </div>
@@ -281,24 +335,37 @@ class Register extends React.Component{
 
 class Square extends React.Component {
   render() {
-    if(this.props.id %6 === 0)
+    if(this.props.id === 12)
     {
-      return (
+      return(
         <div>
-          <button className="square">  
-            {this.props.gamename}
-          </button>
+          <button className="square" >  
+              X
+            </button>
         </div>
       )
     }
-    else
-    {
-      return (
-          <button className="square">
-            {this.props.gamename}
-          </button>
-      )
+    else{
+      if(this.props.id %6 === 0)
+      {
+        return (
+          <div>
+            <button className="square" >  
+              {this.props.gamename}
+            </button>
+          </div>
+        )
+      }
+      else
+      {
+        return (
+            <button className="square" >
+              {this.props.gamename}
+            </button>
+        )
+      }
     }
+    
     
   }
 }
