@@ -290,7 +290,7 @@ class Login extends React.Component {
           <div style={{position:'absolute',left:40 + '%'}}>
               <h2>GAMECENTER</h2>
           </div>
-          <div style={{position: 'absolute',left:30 + '%',top:30 + '%'}}>
+          <div style={{position: 'absolute',left:20 + '%',top:20 + '%'}}>
             <div>
             <h2><a style={{color:this.state.teamColor}}>{this.state.teamColorName}</a> Team Goes First</h2> 
             </div>
@@ -335,22 +335,22 @@ class Register extends React.Component{
 
 class Square extends React.Component {
   render() {
-    if(this.props.id === 12)
-    {
-      return(
-        <div>
-          <button className="square" >  
-              X
-            </button>
-        </div>
-      )
-    }
-    else{
+    // if(this.props.id === 12)
+    // {
+    //   return(
+    //     <div>
+    //       <button className="square" style={{background:this.props.bgColor}}>  
+    //           X
+    //         </button>
+    //     </div>
+    //   )
+    // }
+    // else{
       if(this.props.id %6 === 0)
       {
         return (
           <div>
-            <button className="square" >  
+            <button className="square" style={{background:this.props.bgColor}}>  
               {this.props.gamename}
             </button>
           </div>
@@ -359,7 +359,7 @@ class Square extends React.Component {
       else
       {
         return (
-            <button className="square" >
+            <button className="square" style={{background:this.props.bgColor}}>
               {this.props.gamename}
             </button>
         )
@@ -367,7 +367,7 @@ class Square extends React.Component {
     }
     
     
-  }
+  // }
 }
 
 class Game extends React.Component {
